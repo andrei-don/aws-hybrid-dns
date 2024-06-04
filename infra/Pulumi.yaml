@@ -1,0 +1,10 @@
+name: aws-hybrid-dns
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: infrastructure for hybrid DNS demo
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: aws-python
