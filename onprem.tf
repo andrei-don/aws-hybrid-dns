@@ -144,7 +144,7 @@ resource "aws_instance" "onpremapp" {
   instance_type = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.test_profile.name
   subnet_id = aws_subnet.onprem.id
-  security_groups = [aws_security_group.onprem.id]
+  vpc_security_group_ids = [aws_security_group.onprem.id]
   tags = {
     Name = "onprem-app"
   }
@@ -155,7 +155,7 @@ resource "aws_instance" "onpremdns" {
   instance_type = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.test_profile.name
   subnet_id = aws_subnet.onprem.id
-  security_groups = [aws_security_group.onprem.id]
+  vpc_security_group_ids = [aws_security_group.onprem.id]
   user_data = templatefile("${path.module}/user_data/user_data.tftpl", {r53_resolver = "10.6.0.2", onpremapp_privateip = aws_instance.onpremapp.private_ip})
   tags = {
     Name = "onprem-dns"

@@ -13,6 +13,17 @@ variable "onprem_subnet_cidr" {
   description = "CIDR range for onprem network"
 }
 
+variable "cloud_subnet_cidr_a" {
+  type = string
+  description = "CIDR range for first cloud subnet"
+}
+
+variable "cloud_subnet_cidr_b" {
+  type = string
+  description = "CIDR range for second cloud subnet"
+}
+
+
 variable "region" {
     type = string
     description = "Region used for deployment"
