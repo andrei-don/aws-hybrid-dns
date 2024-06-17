@@ -13,3 +13,20 @@ resource "aws_route53_record" "cloud" {
   ttl     = "60"
   records = [aws_instance.cloudapp.private_ip]
 }
+
+resource "aws_route53_resolver_endpoint" "inbound" {
+  name      = "cloud-inbound"
+  direction = "INBOUND"
+
+  security_group_ids = [
+    aws_security_group.cloud.id
+  ]
+
+  ip_address {
+    subnet_id = aws_subnet.cloud_a.id
+  }
+
+  ip_address {
+    subnet_id = aws_subnet.cloud_b.id
+  }
+}

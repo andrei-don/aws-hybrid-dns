@@ -25,6 +25,11 @@ zone "corp.example.com" IN {
     file "corp.example.com.zone";
     allow-update { none; };
 };
+zone "cloud.example.com" IN {
+    type forward;
+    forward only;
+    forwarders { ${inbound_endpoint_a}; ${inbound_endpoint_b}; };
+};
 EOF
 cat <<EOF > /var/named/corp.example.com.zone
 \$TTL 86400

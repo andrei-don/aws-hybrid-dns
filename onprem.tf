@@ -1,33 +1,3 @@
-resource "aws_vpc" "onprem" {
-  cidr_block = var.onprem_vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support = true
-  tags = {
-    Name = "onprem_vpc"
-  }
-}
-
-resource "aws_subnet" "onprem" {
-  vpc_id     = aws_vpc.onprem.id
-  cidr_block = var.onprem_subnet_cidr
-  tags = {
-    Name = "onprem_subnet"
-  }
-}
-
-resource "aws_route_table" "onprem" {
-  vpc_id = aws_vpc.onprem.id
-
-  tags = {
-    Name = "onprem_rt"
-  }
-}
-
-resource "aws_route_table_association" "onprem" {
-  subnet_id      = aws_subnet.onprem.id
-  route_table_id = aws_route_table.onprem.id
-}
-
 resource "aws_security_group" "onprem" {
   name        = "onprem_sg"
   description = "Allow ssh, dns traffic and all outbound traffic"
@@ -156,12 +126,11 @@ resource "aws_instance" "onpremdns" {
   iam_instance_profile = aws_iam_instance_profile.test_profile.name
   subnet_id = aws_subnet.onprem.id
   vpc_security_group_ids = [aws_security_group.onprem.id]
-  user_data = templatefile("${path.module}/user_data/user_data.tftpl", {r53_resolver = "10.6.0.2", onpremapp_privateip = aws_instance.onpremapp.private_ip})
+  user_data = templatefile("${path.module}/user_data/user_data.tftpl", {r53_resolver = "10.6.0.2", onpremapp_privateip = aws_instance.onpremapp.private_ip, inbound_endpoint_a = local.inbound_endpoint_ips[0], inbound_endpoint_b = local.inbound_endpoint_ips[1]})
   tags = {
     Name = "onprem-dns"
   }
 }
-
 
 
 
