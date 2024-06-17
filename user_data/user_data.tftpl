@@ -7,11 +7,11 @@ dump-file	"/var/named/data/cache_dump.db";
 statistics-file "/var/named/data/named_stats.txt";
 memstatistics-file "/var/named/data/named_mem_stats.txt";
 allow-query { any; };
-allow-transfer     { localhost; ${ONPREMDNSB.PrivateIp}; };
+allow-transfer     { localhost; };
 recursion yes;
 forward first;
 forwarders {
-    192.168.10.2;
+    ${r53_resolver};
 };
 dnssec-enable yes;
 dnssec-validation yes;
@@ -20,13 +20,13 @@ dnssec-lookaside auto;
 bindkeys-file "/etc/named.iscdlv.key";
 managed-keys-directory "/var/named/dynamic";
 };
-zone "corp.animals4life.org" IN {
+zone "corp.example.com" IN {
     type master;
-    file "corp.animals4life.org.zone";
+    file "corp.example.com.zone";
     allow-update { none; };
 };
 EOF
-cat <<EOF > /var/named/corp.animals4life.org.zone
+cat <<EOF > /var/named/corp.example.com.zone
 \$TTL 86400
 @   IN  SOA     ns1.mydomain.com. root.mydomain.com. (
         2013042201  ;Serial
@@ -35,16 +35,14 @@ cat <<EOF > /var/named/corp.animals4life.org.zone
         604800      ;Expire
         86400       ;Minimum TTL
 )
-; Specify our two nameservers
-    IN	NS		dnsA.corp.animals4life.org.
-    IN	NS		dnsB.corp.animals4life.org.
+; Specify our nameserver
+    IN	NS		dnsA.corp.example.com.
 ; Resolve nameserver hostnames to IP, replace with your two droplet IP addresses.
 dnsA		IN	A		1.1.1.1
-dnsB	  IN	A		8.8.8.8
 
 ; Define hostname -> IP pairs which you wish to resolve
-@		  IN	A		${ONPREMAPP.PrivateIp}
-app		IN	A	  ${ONPREMAPP.PrivateIp}
+@		  IN	A		${onpremapp_privateip}
+app		IN	A	  ${onpremapp_privateip}
 EOF
 service named restart
 chkconfig named on
