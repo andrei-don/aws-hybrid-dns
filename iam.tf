@@ -30,21 +30,21 @@ resource "aws_iam_role_policy" "ec2_policy" {
         Effect   = "Allow"
         Resource = "*"
       },
-     {
+      {
         Action = [
           "ssmmessages:*"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
-     {
+      {
         Action = [
           "ec2messages:*"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
-     {
+      {
         Action = [
           "s3:*"
         ]

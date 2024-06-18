@@ -30,3 +30,31 @@ resource "aws_route53_resolver_endpoint" "inbound" {
     subnet_id = aws_subnet.cloud_b.id
   }
 }
+
+resource "aws_route53_resolver_endpoint" "outbound" {
+  name      = "cloud-outbound"
+  direction = "OUTBOUND"
+
+  security_group_ids = [
+    aws_security_group.cloud.id
+  ]
+
+  ip_address {
+    subnet_id = aws_subnet.cloud_a.id
+  }
+
+  ip_address {
+    subnet_id = aws_subnet.cloud_b.id
+  }
+}
+
+resource "aws_route53_resolver_rule" "forward_onprem" {
+  domain_name          = "corp.example.com"
+  name                 = "forward-to-onprem"
+  rule_type            = "FORWARD"
+  resolver_endpoint_id = aws_route53_resolver_endpoint.outbound.id
+
+  target_ip {
+    ip = aws_instance.onpremdns.private_ip
+  }
+}
