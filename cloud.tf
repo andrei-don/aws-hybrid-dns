@@ -69,6 +69,24 @@ resource "aws_vpc_security_group_ingress_rule" "cloud_inbound_icmp" {
   to_port     = -1
 }
 
+resource "aws_vpc_security_group_ingress_rule" "cloud_inbound_higher_ports_tcp" {
+  security_group_id = aws_security_group.cloud.id
+
+  cidr_ipv4   = var.onprem_vpc_cidr
+  ip_protocol = "tcp"
+  from_port   = 1024
+  to_port     = 65535
+}
+
+resource "aws_vpc_security_group_ingress_rule" "cloud_inbound_higher_ports_udp" {
+  security_group_id = aws_security_group.cloud.id
+
+  cidr_ipv4   = var.onprem_vpc_cidr
+  ip_protocol = "udp"
+  from_port   = 1024
+  to_port     = 65535
+}
+
 resource "aws_vpc_security_group_ingress_rule" "cloud_self" {
   security_group_id = aws_security_group.cloud.id
 

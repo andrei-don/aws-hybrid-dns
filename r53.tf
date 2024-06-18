@@ -58,3 +58,8 @@ resource "aws_route53_resolver_rule" "forward_onprem" {
     ip = aws_instance.onpremdns.private_ip
   }
 }
+
+resource "aws_route53_resolver_rule_association" "outbound" {
+  resolver_rule_id = aws_route53_resolver_rule.forward_onprem.id
+  vpc_id           = aws_vpc.cloud.id
+}
